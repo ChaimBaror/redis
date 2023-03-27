@@ -1,0 +1,54 @@
+version: "3.9"
+services:
+  redis:
+    image: redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL    
+    ports:
+      - "6379:6379"
+    entrypoint: redis-server --appendonly yes      
+    volumes:
+      - cache:/data
+
+  publisher:
+    image: node:14.15.4
+    container_name: publisher
+    volumes:
+      - ./nodejs:/app
+    environment:
+      NODE_ENV: production
+      REDIS_URL: redis://redis:6379      
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis  
+    command: bash -c "cd /app && npm i && npm run publish"
+
+  subscribe:
+    image: node:14.15.4
+    container_name: subscribe
+    volumes:
+      - ./nodejs:/app
+    environment:
+      NODE_ENV: production
+      REDIS_URL: redis://redis:6379 
+      PORT: 3001     
+    ports:
+      - "3001:3001"
+    depends_on:
+      - redis  
+    command: bash -c "cd /app && npm i && npm run subscribe"    
+
+  python:
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
+
+volumes:
+  cache: 
+
+
+

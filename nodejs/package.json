@@ -1,0 +1,21 @@
+{
+  "name": "redisandmicroservice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index",
+    "subscribe": "nodemon subscriber.js",
+    "publish": "nodemon publisher.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "prompt-sync": "^4.2.0",
+    "redis": "^4.6.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
